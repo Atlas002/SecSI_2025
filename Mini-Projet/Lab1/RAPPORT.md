@@ -69,6 +69,22 @@ Tests avec différentes contraintes :
 
 ## Partie 1-C : Configuration de l'authentification SSH avec échange de clé
 
+### Générer la paire de clés SSH (sur la VM Kali - client)
+```bash
+ssh-keygen
+```
+- Accepter l'emplacement par défaut.
+- Définir une phrase secrète (passphrase) pour protéger la clé privée.
+
+![screen6.png](./screenshots/screen6.png)
+
+### Copier la clé publique vers le serveur (VM Ubuntu)
+```bash
+ssh-copy-id utilisateur@adresse_ip_ubuntu
+```
+- Saisir le mot de passe de l'utilisateur sur Ubuntu.
+
+![screen7.png](./screenshots/screen7.png)
 
 ## Partie 1-D : Introduction aux outils d'attaque et de test (Wireshark, Nmap, etc.)
 
