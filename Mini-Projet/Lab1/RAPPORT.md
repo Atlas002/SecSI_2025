@@ -20,7 +20,7 @@ maxsequence = 3
 difok = 5
 gecoscheck = 1
 ```
-![screen1.png]
+![screen1.png](./screenschots/screen1.png)
 
 ### Application via PAM
 ### Modification de `/etc/pam.d/common-password`
