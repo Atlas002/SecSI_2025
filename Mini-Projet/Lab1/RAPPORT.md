@@ -86,6 +86,15 @@ ssh-copy-id utilisateur@adresse_ip_ubuntu
 
 ![screen7.png](./screenshots/screen7.png)
 
+![screen8.png](./screenshots/screen8.png)
+
+### Tester la connexion SSH par clé
+```bash
+ssh tdutrey@172.20.210.5
+```
+
+![screen9.png](./screenshots/screen9.png)
+
 ## Partie 1-D : Introduction aux outils d'attaque et de test (Wireshark, Nmap, etc.)
 
 
