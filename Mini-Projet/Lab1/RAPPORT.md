@@ -32,6 +32,7 @@ Ajout de :
 password requisite pam_pwquality.so retry=3
 password required pam_unix.so sha512 shadow nullok try_first_pass use_authtok
 ```
+![screen2.png](./screenshots/screen2.png)
 
 ### Configuration du renouvellement des mots de passe
 ### Modification de `/etc/login.defs`
@@ -41,15 +42,30 @@ sudo nano /etc/login.defs
 Configuration :
 ```
 PASS_MAX_DAYS 90
-PASS_MIN_DAYS 1
+PASS_MIN_DAYS 0
 PASS_WARN_AGE 7
 ```
+![screen3.png](./screenshots/screen3.png)
 
 ### Application à un utilisateur spécifique
 ```bash
 sudo chage -M 90 kali
 sudo chage -l kali
 ```
+![screen4.png](./screenshots/screen4.png)
+
+### Test de la politique de mot de passe
+```bash
+passwd  kali
+```
+Tests avec différentes contraintes :
+- Trop court → refusé
+- Sans chiffres → refusé
+- Ne respectant pas toutes les classes → refusé
+- Conforme aux règles → accepté
+
+![screen5.png](./screenshots/screen5.png)
+
 
 ## Partie 1-C : Configuration de l'authentification SSH avec échange de clé
 
