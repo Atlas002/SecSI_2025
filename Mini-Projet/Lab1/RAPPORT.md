@@ -7,3 +7,6 @@
 ```bash
 sudo nano /etc/security/pwquality.conf
 ```
+
+## Partie 1-C : Configuration de l'authentification SSH avec échange de clé
+
