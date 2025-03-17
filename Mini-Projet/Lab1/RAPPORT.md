@@ -120,19 +120,20 @@ ainsi que l'adresse IP de destination : 172.20.10.4
 
 ### Nmap : Scan de Ports de Base
 
-- **Scan SYN des ports ouverts**
+- **Scan SYN des ports ouverts :**
+
 Commande exécutée depuis la VM Attaquant :
 ```bash
 nmap -sS 172.20.10.4
 ```
 ![screen13.png](./screenshots/screen13.png)
 
-- **Détection des versions des services**
+- **Détection des versions des services :**
+
 Commande exécutée :
 ```bash
 nmap -sV 172.20.10.4
 ```
-
 ![screen14.png](./screenshots/screen14.png)
 
 
