@@ -206,7 +206,7 @@ sudo iptables -L -v
 ```
 ![screen21.png](./screenshots/screen21.png)
 
-Une fois toutes les lignes supprimées ou les commandes suivant éxécutée, on se retrouve avec les règles initiales :
+Une fois toutes les lignes supprimées ou les commandes suivantes éxécutées, on se retrouve avec les règles initiales :
 
 ```bash
 sudo iptables -D INPUT <numéro_de_ligne>
