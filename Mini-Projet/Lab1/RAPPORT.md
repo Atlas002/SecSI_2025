@@ -1,6 +1,6 @@
 # Mini-Projet 1 : Fondamentaux et Identification/Authentification
 
-## Partie 1-B : : Mise en place d'une politique de mot de passe (complexité, renouvellement)
+## Partie 1-B : Mise en place d'une politique de mot de passe (complexité, renouvellement)
 
 ### Configuration de la politique de mot de passe
 ### Modification de `/etc/security/pwquality.conf`
