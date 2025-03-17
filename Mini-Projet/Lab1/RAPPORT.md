@@ -146,7 +146,35 @@ sudo tcpdump -i eth0 -n icmp
 ```
 ![screen15.png](./screenshots/screen15.png)
 
-
-
 ## Partie 1-E : Mise en place de protection basique (exemple : firewall basique)
+
+### Prise en Main :
+- **Vérification du Statut Actuel d'iptables :**
+
+Pour afficher les règles iptables actuelles on tape cette commande :
+
+```bash
+sudo iptables -L
+```
+![screen16.png](./screenshots/screen16.png)
+
+- **Mise en Place d'une Règle de Firewall Basique : Bloquer le Ping (ICMP INPUT) :**
+
+L'objectif est simple, empêcher la VM de répondre aux requêtes Ping. Pour cela on éxecute cette commande :
+```bash
+sudo iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+```
+on vérifie ensuite avec :
+```bash
+sudo iptables -L
+```
+![screen17.png](./screenshots/screen17.png)
+
+
+
+
+
+
+
+
 
