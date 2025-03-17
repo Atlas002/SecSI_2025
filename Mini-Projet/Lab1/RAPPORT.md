@@ -97,10 +97,10 @@ ssh tdutrey@172.20.210.5
 
 ## Partie 1-D : Introduction aux outils d'attaque et de test (Wireshark, Nmap, etc.)
 
+### Wireshark : Capture et Analyse de Base
 ### Générer du trafic réseau
 
 Pour générer du trafic on utilise la commande Ping qui permet d'envoyer des paquets vers une adresse IP ciblé
-
 ```bash
 ping -c 5 172.20.10.4
 ```
@@ -111,6 +111,12 @@ On repère les paquets depuis wireshark pour les analyser:
 ![screen11.png](./screenshots/screen11.png)
 
 ### Filtrage et Analyse des Paquets
+
+Depuis Wireshark on filtre en tapant "ICMP" dans la barre du haut :
+
+![screen12.png](./screenshots/screen12.png)
+on remarque alors l'adresse IP source : 172.20.10.2 
+ainsi que l'adresse IP de destination : 172.20.10.4
 
 
 
