@@ -97,6 +97,23 @@ ssh tdutrey@172.20.210.5
 
 ## Partie 1-D : Introduction aux outils d'attaque et de test (Wireshark, Nmap, etc.)
 
+### Générer du trafic réseau
+
+Pour générer du trafic on utilise la commande Ping qui permet d'envoyer des paquets vers une adresse IP ciblé
+
+```bash
+ping -c 5 172.20.10.4
+```
+![screen10.png](./screenshots/screen10.png)
+
+On repère les paquets depuis wireshark pour les analyser:
+
+![screen11.png](./screenshots/screen11.png)
+
+### Filtrage et Analyse des Paquets
+
+
+
 
 ## Partie 1-E : Mise en place de protection basique (exemple : firewall basique)
 
