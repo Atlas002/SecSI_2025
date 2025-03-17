@@ -1,5 +1,7 @@
 # Mini-Projet 1 : Fondamentaux et Identification/Authentification
 
+PS : Le TP ayant été réalisé à différents moments et non d'une seule traite, les adresses IP des différentes machines ont changé en fonction du réseau sur lequel se trouvait la machine hôte.
+
 ## Partie 1-B : Mise en place d'une politique de mot de passe (complexité, renouvellement)
 
 ### Configuration de la politique de mot de passe
@@ -169,6 +171,14 @@ on vérifie ensuite avec :
 sudo iptables -L
 ```
 ![screen17.png](./screenshots/screen17.png)
+
+- **Test de la Règle : Ping depuis la VM Kali Cliente vers la VM Kali server :**
+
+```bash
+ping -c 5 10.5.23.15
+```
+![screen18.png](./screenshots/screen18.png)
+
 
 
 
