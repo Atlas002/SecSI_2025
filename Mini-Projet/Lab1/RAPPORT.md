@@ -136,6 +136,17 @@ nmap -sV 172.20.10.4
 ```
 ![screen14.png](./screenshots/screen14.png)
 
+### Autres Outils Utiles :
+
+- **Capture avec tcpdump :**
+
+Commande exécutée :
+```bash
+sudo tcpdump -i eth0 -n icmp
+```
+![screen15.png](./screenshots/screen15.png)
+
+
 
 ## Partie 1-E : Mise en place de protection basique (exemple : firewall basique)
 
