@@ -179,6 +179,47 @@ ping -c 5 10.5.23.15
 ```
 ![screen18.png](./screenshots/screen18.png)
 
+- **Autoriser le Trafic SSH Entrant (TCP INPUT port 22) :**
+
+ On execute la commande suivante :
+ ```
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+```
+![screen19.png](./screenshots/screen19.png)
+
+
+- **Test de la Règle SSH : Connexion SSH depuis la VM Kali Client vers la VM Serveur :**
+
+On essaie de se connecter en SSH à la VM Kali Server :
+```bash
+SSH kali@192.168.1.42
+```
+![screen23.png](./screenshots/screen23.png)
+
+On remarque que l'on arrive bien à se connecter en SSH même si le ping est interdit.
+
+- **Suppression des Règles iptables (Nettoyage) :**
+
+On souhaite supprimer les règles en fonction de son numéro alors on affiche son numéro :
+```bash
+sudo iptables -L -v
+```
+![screen21.png](./screenshots/screen21.png)
+
+Une fois toutes les lignes supprimées ou les commandes suivant éxécutée, on se retrouve avec les règles initiales :
+
+```bash
+sudo iptables -D INPUT <numéro_de_ligne>
+sudo iptables -F INPUT
+```
+![screen22.png](./screenshots/screen22.png)
+
+**END**
+
+
+
+
+
 
 
 
