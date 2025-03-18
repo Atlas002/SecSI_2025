@@ -14,3 +14,17 @@ INSERT INTO users (username, password, role) VALUES
 ('eleve1', MD5('password123'), 'eleve'),
 ('prof1', MD5('password456'), 'prof'),
 ('admin1', MD5('adminpass'), 'admin');
+
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html/monprojet/public
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory /var/www/html/monprojet/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
