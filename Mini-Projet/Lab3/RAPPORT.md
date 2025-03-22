@@ -23,7 +23,9 @@ ping <ip_passerelle>
 ```
 
 **Capture d'écran de la configuration réseau  :**
+
 ![Configuration réseau](./screenshots/screen1.png)
+
 ![Configuration réseau](./screenshots/screen2.png)
 
 ---
@@ -49,6 +51,7 @@ arp -a  # Pour voir les adresses MAC connues
 ```
 
 **Capture d'écran des adresses IP et MAC avant attaque :**
+
 ![Adresses avant attaque](./screenshots/screen3.png)
 
 ### Lancement de l'attaque
@@ -62,7 +65,9 @@ sudo arpspoof -i eth0 -t <ip_passerelle> <ip_victime>
 ```
 
 **Capture d'écran des commandes arpspoof :**
+
 ![Exécution d'arpspoof](./screenshots/screen4.png)
+
 ![Exécution d'arpspoof](./screenshots/screen5.png)
 ---
 
@@ -77,6 +82,7 @@ wireshark
 Nous filtrons sur le protocole `arp` pour voir les requêtes falsifiées.
 
 **Capture d'écran de Wireshark montrant le trafic ARP :**
+
 ![Wireshark](./screenshots/screen6.png)
 
 Interprétation des Données Capturées
@@ -126,7 +132,9 @@ Puis exécution de la commande :
 ifconfig
 ```
 **Résultat :** 
+
 ![Metasploit ip](./screenshots/screen7.png)
+
 Adresse IP de la VM : `172.20.10.14`
 
 ---
@@ -136,7 +144,9 @@ Adresse IP de la VM : `172.20.10.14`
 - Accès à l'application DVWA : `http://172.20.10.14/dvwa/`
 - Connexion avec `admin/password`
 - Réglage du niveau de sécurité sur "Low"
+
 ![Metasploit](./screenshots/screen8.png)
+
 - Accès à la section "XSS (Reflected)"
 
 ### Attaque XSS
@@ -147,13 +157,17 @@ Injection de la charge :
 **Résultat attendu :** Une boîte d'alerte s'affiche avec le message "XSS".
 
 ![Capture d'écran XSS](./screenshots/screen9.png)
+
 ![Capture d'écran XSS](./screenshots/screen10.png)
+
 **Autre payload (redirection) :**
 ```html
 <script>window.location='http://www.google.com';</script>
 ```
 ![Capture d'écran XSS](./screenshots/screen11.png)
+
 ![Capture d'écran XSS](./screenshots/screen14.png)
+
 ---
 
 ## 3. Exploitation d'une vulnérabilité SQL Injection
@@ -175,6 +189,7 @@ Injection de la charge :
 1' union select table_name from information_schema.tables where table_schema = database()#
 ```
 ![Capture d'écran SQLi](./screenshots/screen13.png)
+
 ---
 
 ## 4. Observations et Compréhension
@@ -241,20 +256,31 @@ burpsuite
 - Consultez les onglets "Params", "Headers" et "Request"
 
  **J'essaye d'accéder à "Instructions"**
+
 ![Interception de requêtes](screenshots/screen17.png)
+
  **On observe qu'on a intercepté des requêtes, j'appuie sur forward pour la valider**
+
 ![Interception de requêtes](screenshots/screen18.png)
+
 **On accède à la page**
+
 ![Interception de requêtes](screenshots/screen19.png)
 
 ### Modification
 
 1. Envoyez une requête au "Repeater"
+
 ![Interception de requêtes](screenshots/screen20.png)
+
 2. Modifiez un paramètre GET ou POST
+
 ![Interception de requêtes](screenshots/screen21.png)
+
 3. Cliquez sur "Send" et observez la réponse
+
 ![Interception de requêtes](screenshots/screen22.png)
+
 On observe que la page n'est plus reconnue après avoir changer un paramètre.
 
 **Exemples :**
@@ -263,7 +289,9 @@ On observe que la page n'est plus reconnue après avoir changer un paramètre.
 
 1. Accédez à la page "SQL Injection"
 2. Entrez `1` et interceptez la requête
+
 ![Interception de requêtes](screenshots/screen23.png)
+
 3. Modifiez `id=1` en `id=1' or '1'='1` et envoyez-la
 
 Problème dans cette partie car les injections sql ne fonctionnaient plus sur le site metasploit, on voyait donc la page après avoir modifier le paramètre id mais on ne voyait pas le résultat de l'injection.
