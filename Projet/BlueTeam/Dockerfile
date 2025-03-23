@@ -7,11 +7,15 @@ WORKDIR /var/www/
 # Copier les fichiers de ton projet dans le conteneur
 COPY . /var/www/
 
+#Règmentation des fichiers php pour production
+COPY config/php.ini /usr/local/etc/php/conf.d/custom.ini
+
 # Activer les extensions PHP nécessaires (ex: mysqli, pdo_mysql si tu utilises une BDD)
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Modifier les permissions si nécessaire
-RUN chown -R www-data:www-data /var/www/html/
+# Modifier les permissions
+#RUN chown -R www-data:www-data /var/www/html/
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 # Exposer le port 80 pour Apache
 EXPOSE 80

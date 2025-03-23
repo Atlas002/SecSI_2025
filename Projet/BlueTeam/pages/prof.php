@@ -37,19 +37,67 @@ if (isset($_POST['add_cours'])) {
     $classe = htmlspecialchars($_POST['classe']);
     $matiere = htmlspecialchars($_POST['matiere']);
     $horaire = htmlspecialchars($_POST['horaire']);
-    $salle = htmlspecialchars($_POST['salle']);
     
-    $stmt = $pdo->prepare("INSERT INTO cours (prof_id, classe, matiere, horaire, salle) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$prof['id'], $classe, $matiere, $horaire, $salle])) {
-        $message = "Cours ajouté avec succès!";
+    // Ne pas échapper la salle - c'est ici que l'injection SQL sera possible
+    $salle = $_POST['salle']; 
+    
+    // Utiliser la connexion vulnérable pour cette requête spécifique
+    require_once '../config/db_vulnerable.php';
+    $mysqli = getVulnerableConnection();
+    
+    // Construire la requête de manière vulnérable (concaténation directe)
+    // Sans les apostrophes finales pour permettre l'injection
+    $query = "INSERT INTO cours (prof_id, classe, matiere, horaire, salle) VALUES ('".$prof['id']."', '".$classe."', '".$matiere."', '".$horaire."', '".$salle."";
+    
+    // Si la salle ne contient pas déjà une apostrophe fermante, ajoutez-la
+    if (strpos($salle, "'") === false) {
+        $query .= "')";
+    }
+    
+    // Enregistrer la requête pour l'afficher plus tard
+    $_SESSION['last_query'] = $query;
+    
+    // Exécuter la requête sans préparation
+    $success = $mysqli->multi_query($query);
+    
+    // Récupérer tous les résultats
+    $results = [];
+    if ($success) {
+        do {
+            if ($result = $mysqli->store_result()) {
+                $tmpResult = [];
+                while ($row = $result->fetch_assoc()) {
+                    $tmpResult[] = $row;
+                }
+                if (!empty($tmpResult)) {
+                    $results[] = $tmpResult;
+                }
+                $result->free();
+            } else {
+                if ($mysqli->errno) {
+                    $results[] = ["Erreur: " . $mysqli->error];
+                } else if ($mysqli->affected_rows > 0) {
+                    $results[] = ["Message: " . $mysqli->affected_rows . " ligne(s) affectée(s)"];
+                }
+            }
+        } while ($mysqli->more_results() && $mysqli->next_result());
+        
+        // Stockez les résultats pour affichage
+        $_SESSION['sql_injection_results'] = $results;
+        
+        $message = "Opération terminée!";
         $messageType = "success";
-        // Rafraîchir la liste des cours
-        header("Location: prof.php?view=cours&message=$message&type=$messageType");
+        header("Location: prof.php?view=cours&message=$message&type=$messageType&injection=success");
         exit;
     } else {
-        $message = "Erreur lors de l'ajout du cours.";
+        $message = "Erreur SQL: " . $mysqli->error;
         $messageType = "error";
+        $_SESSION['sql_error'] = $mysqli->error;
+        header("Location: prof.php?view=cours&message=$message&type=$messageType&error=" . urlencode($mysqli->error));
+        exit;
     }
+    
+    $mysqli->close();
 }
 
 // Modifier un cours
@@ -58,18 +106,23 @@ if (isset($_POST['edit_cours']) && isset($_POST['cours_id'])) {
     $classe = htmlspecialchars($_POST['classe']);
     $matiere = htmlspecialchars($_POST['matiere']);
     $horaire = htmlspecialchars($_POST['horaire']);
-    $salle = htmlspecialchars($_POST['salle']);
+    $salle = $_POST['salle']; // Suppression de htmlspecialchars
     
     // Vérifier que le cours appartient au professeur
     $stmt = $pdo->prepare("SELECT * FROM cours WHERE id = ? AND prof_id = ?");
     $stmt->execute([$coursId, $prof['id']]);
     if ($stmt->rowCount() > 0) {
-        $stmt = $pdo->prepare("UPDATE cours SET classe = ?, matiere = ?, horaire = ?, salle = ? WHERE id = ?");
-        if ($stmt->execute([$classe, $matiere, $horaire, $salle, $coursId])) {
+        //
+        // VULBNERABILITE: Injection SQL possible dans la variable $salle
+        //
+        // Requête vulnérable utilisant la concaténation directe
+        $query = "UPDATE cours SET classe = '" . $classe . "', matiere = '" . $matiere . "', horaire = '" . $horaire . "', salle = '" . $salle . "' WHERE id = " . $coursId;
+        
+        if ($pdo->query($query)) {
             $message = "Cours modifié avec succès!";
             $messageType = "success";
         } else {
-            $message = "Erreur lors de la modification du cours.";
+            $message = "Erreur lors de la modification du cours: " . $pdo->errorInfo()[2];
             $messageType = "error";
         }
     } else {
@@ -293,6 +346,94 @@ if (isset($_GET['message']) && isset($_GET['type'])) {
     </header>
     
     <main class="container">
+        <!-- Affichage des informations d'injection SQL -->
+        <?php if (isset($_GET['injection']) && $_GET['injection'] == 'success'): ?>
+            <div class="sql-injection-results" style="background-color: #ffdddd; border: 2px solid red; padding: 15px; margin-bottom: 20px;">
+                <h3 style="color: red;">⚠️ Injection SQL détectée !</h3>
+                <?php if (isset($_SESSION['last_query'])): ?>
+                    <div>
+                        <h4>Requête exécutée :</h4>
+                        <pre style="background-color: #f5f5f5; padding: 10px; overflow-x: auto;"><?php echo htmlspecialchars($_SESSION['last_query']); ?></pre>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_SESSION['sql_injection_results']) && !empty($_SESSION['sql_injection_results'])): ?>
+                    <div>
+                        <h4>Résultats des requêtes :</h4>
+                        <?php foreach ($_SESSION['sql_injection_results'] as $index => $resultSet): ?>
+                            <h5>Résultat #<?php echo $index + 1; ?> :</h5>
+                            <?php if (empty($resultSet)): ?>
+                                <p>Aucune donnée retournée ou commande exécutée avec succès</p>
+                            <?php elseif (isset($resultSet[0]) && is_array($resultSet[0])): ?>
+                                <div style="overflow-x: auto;">
+                                    <table border="1" style="border-collapse: collapse; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <?php foreach (array_keys($resultSet[0]) as $column): ?>
+                                                    <th style="padding: 8px; background-color: #f2f2f2;"><?php echo htmlspecialchars($column); ?></th>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($resultSet as $row): ?>
+                                                <tr>
+                                                    <?php foreach ($row as $value): ?>
+                                                        <td style="padding: 8px; border: 1px solid #ddd;"><?php echo htmlspecialchars($value); ?></td>
+                                                    <?php endforeach; ?>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <pre style="background-color: #f5f5f5; padding: 10px;"><?php print_r($resultSet); ?></pre>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Ajouter un compteur d'opérations pour les requêtes non SELECT -->
+                <?php
+                // Vérifier les modifications dans les tables principales
+                $tableChanges = [];
+                $tables = ['cours', 'notes', 'eleves', 'profs', 'users'];
+                foreach ($tables as $table) {
+                    try {
+                        $countQuery = "SELECT COUNT(*) as count FROM $table";
+                        $countResult = $pdo->query($countQuery);
+                        $count = $countResult->fetch(PDO::FETCH_ASSOC)['count'];
+                        $tableChanges[] = "$table: $count enregistrements";
+                    } catch (Exception $e) {
+                        $tableChanges[] = "$table: Erreur lors du comptage";
+                    }
+                }
+                ?>
+                <div>
+                    <h4>État actuel des tables :</h4>
+                    <ul>
+                        <?php foreach ($tableChanges as $change): ?>
+                            <li><?php echo htmlspecialchars($change); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+            
+            <?php 
+            // Nettoyage des variables de session après affichage
+            unset($_SESSION['last_query']);
+            unset($_SESSION['sql_injection_results']);
+            ?>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error']) || isset($_SESSION['sql_error'])): ?>
+            <div class="sql-error" style="background-color: #fff3cd; border: 2px solid #ffeeba; padding: 15px; margin-bottom: 20px;">
+                <h3>Erreur SQL :</h3>
+                <pre style="background-color: #f5f5f5; padding: 10px; overflow-x: auto;"><?php echo htmlspecialchars(isset($_GET['error']) ? urldecode($_GET['error']) : $_SESSION['sql_error']); ?></pre>
+            </div>
+            <?php unset($_SESSION['sql_error']); ?>
+        <?php endif; ?>
+
+
         <!-- Affichage des messages -->
         <?php if (!empty($message)): ?>
             <div class="alert alert-<?php echo $messageType; ?>">

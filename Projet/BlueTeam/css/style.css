@@ -2033,21 +2033,6 @@ select:focus {
     font-size: 18px;
 }
 
-.btn {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: #3498db;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.btn:hover {
-    background-color: #2980b9;
-}
-
 /* Calendrier */
 .calendar {
     background-color: white;

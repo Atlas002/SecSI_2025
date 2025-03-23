@@ -88,6 +88,46 @@ EXPOSE 80
 - Les permissions des fichiers sont modifiées pour s'assurer que l'utilisateur Apache (www-data) a l'autorisation de lire et d'écrire dans ces fichiers.
 - Le port 80 est exposé pour que le site web soit accessible via HTTP.
 
+### 3.2 Docker Compose :
+Pour simplifier le déploiement du site web, un fichier `docker-compose.yml` a été créé pour définir les services nécessaires (Apache, PHP, MySQL, etc.) et les liens entre eux. Voici un exemple de fichier `docker-compose.yml` pour un site web PHP avec Apache :
+
+```yaml
+services:
+  web:
+    build: .
+    env_file:
+      - .env
+    container_name: site-web-secussi
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
+    restart: always
+  db:
+      image: mysql:8.0
+      container_name: mysql-db
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: rootXfo9_72fQ-t2
+        MYSQL_DATABASE: ece_db
+        MYSQL_USER: user
+        MYSQL_PASSWORD: nv7_4f8X.g1qPPP
+      ports:
+        - "3306:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+        - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+volumes:
+  mysql_data:
+```
+
 ---
 
 ## 4. Déploiement du site sur la machine virtuelle
@@ -126,6 +166,158 @@ Le script utilise un **Personal Access Token (PAT)** pour éviter d'avoir à sai
 
 ---
 
-## Conclusion
+## Conclusion de la partie 4 Server 
 
 Le site web est désormais déployé sur une machine virtuelle AWS, accessible via le port 80. Cette VM fonctionne en réalité comme un VPS (Virtual Private Server), offrant un environnement dédié avec un système d'exploitation complet et des ressources indépendantes. Cela nous permet de gérer notre serveur comme un serveur dédié tout en profitant des avantages du cloud et permettant de laisser certaines failles pour la Red Team. Le processus de déploiement a été automatisé grâce au script `deploy.sh`, qui gère la mise à jour du code, la reconstruction de l'image Docker et le redémarrage du conteneur. Le VPC a permis de sécuriser le réseau et de configurer l'accès public à l'instance EC2. 
+
+---
+
+## 5. Création du site web avec HTML, CSS et PHP
+
+Le site web a été développé en utilisant HTML, CSS et PHP pour créer une interface utilisateur interactive et dynamique. Le site contient plusieurs pages, dont une page d'accueil, une page prof, élève, admin et même un calendrier. Le site est hébergé sur un serveur Apache avec PHP, permettant d'exécuter des scripts PHP côté serveur pour interagir avec la base de données et générer du contenu dynamique.
+
+Voici la structure du site web :
+
+```
+.
+├── config
+│   ├── db.php
+│   ├── db_vulnerable.php
+│   ├── init.sql
+│   └── php.ini
+├── css
+│   └── style.css
+├── docker-compose.yml
+├── Dockerfile
+├── images
+│   ├── admin.jpg
+│   ├── eleve.jpg
+│   └── prof.jpg
+├── includes
+│   ├── footer.php
+│   └── header.php
+├── index.php
+├── login
+│   └── login.php
+├── pages
+│   ├── admin.php
+│   ├── cal.php
+│   ├── eleve.php
+│   ├── index.php
+│   └── prof.php
+└── README.md
+```
+
+- Le dossier `config` contient les fichiers de configuration pour la base de données et PHP.
+- Le dossier `css` contient les fichiers de style CSS pour personnaliser l'apparence du site.
+- Le dossier `images` contient les images utilisées sur le site.
+- Le dossier `includes` contient les fichiers (footer et header) PHP inclus dans plusieurs pages pour réutiliser du code.
+- Le dossier `login` contient le formulaire de connexion pour les utilisateurs.
+- Le dossier `pages` contient les différentes pages du site (accueil, prof, élève, admin, calendrier).
+
+---
+
+## 6. Respect des normes OWASP Top 10 2021
+
+### 6.1. A01:2021 - Broken Access Control ✅ Respecté
+Le site implémente des contrôles d’accès pour limiter l’accès à certaines pages en fonction du rôle des utilisateurs (ex. professeurs, élèves, administrateurs). Cependant, la faiblesse liée à Patrick Fourtou (mot de passe faible) peut permettre un accès non autorisé si un attaquant réussit à prendre son compte.
+
+Recommandation supplémentaire :
+
+Vérifier systématiquement les autorisations côté serveur avant d’afficher une page protégée.
+
+Implémenter un mécanisme de vérification des sessions pour éviter l'usurpation d’identité.
+
+### 6.2. A02:2021 - Cryptographic Failures ❌ Non appliqué
+Deux problèmes majeurs compromettent la sécurité cryptographique :
+
+Stockage des mots de passe en MD5, un algorithme obsolète et non sécurisé.
+
+Absence de chiffrement HTTPS, ce qui expose les données sensibles en clair sur le réseau.
+
+Recommandation :
+
+Remplacer MD5 par bcrypt ou Argon2 pour stocker les mots de passe.
+
+Mettre en place un certificat SSL et forcer le passage en HTTPS.
+
+### 6.3. A03:2021 - Injection 🟠 Faiblesse
+Utilisation des requêtes préparées avec PDO pour éviter l’injection SQL. Ceci est fait dans la page db.php et l'ensemble du site sauf la faille utilisent ceette méthode.
+
+```php
+<?php
+$host = getenv('DB_HOST');
+$dbname = getenv('DB_NAME');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASS');
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connexion échouée : " . $e->getMessage());
+}
+?>
+```
+
+⚠️ La page prof.php est vulnérable aux injections SQL via l’input "salle", ce qui permettrait à un attaquant de manipuler la base de données.
+
+Pour récupérer les informations de la table `users`, un attaquant pourrait/devrait utiliser une requête SQL malveillante comme suit :
+
+```sql
+ Salle 101'); SELECT * FROM eleves; -- 
+```
+Dans l'input salle
+
+Recommandation :
+
+Utiliser des requêtes préparées avec PDO/MySQLi.
+
+Échapper et valider toutes les entrées utilisateur.
+
+### 6.4. A04:2021 - Insecure Design ✅ Respecté
+Le site suit une certaine structure logique avec des rôles bien définis et des fichiers de configuration sécurisés. Notaement avec le fichier `php.ini` et `.htaccess`.
+
+
+### 6.5. A05:2021 - Security Misconfiguration ✅ Respecté
+Le site est correctement configuré sur son serveur Apache et PHP. L’affichage des erreurs en production a été désactivé.
+
+**Recommandation :**
+
+Mettre en place snort sur le serevr pour détecter les attaques.
+
+### 6.6. A06:2021 - Vulnerable and Outdated Components ✅ Respecté
+Le site utilise une version récente de PHP et n’emploie pas de bibliothèques connues pour contenir des vulnérabilités.
+
+**Amélioration possible :**
+
+Mettre en place un système de mise à jour automatique des dépendances.
+
+### 6.7. A07:2021 - Identification and Authentication Failures 🟠 Faiblesse
+Toutes les authentifications et accès aux pages snesibles sont sécurisées.
+Cepednant le mot de passe faible de Patrick Fourtou et le stockage en MD5 constituent une vulnérabilité.
+
+**L'utilisateur Patrick Fourtou utilise le mot de passe "password", qui est extrêmement faible et facilement devinable.**
+
+Un attaquant pourrait exploiter cette faiblesse en utilsiant du brutforce pour se connecter à son compte et accéder aux pages restreintes associées à ce profil.
+L'individu est aussi décrit comme une personne qui se fait facilement piéger par des attaques de phishing.
+
+**Recommandations :**
+
+Ajouter une protection contre le bruteforce (ex. limiter les tentatives de connexion).
+
+### 6.8. A08:2021 - Software and Data Integrity Failures ✅ Respecté
+Le site ne repose pas sur des mises à jour logicielles non vérifiées, ce qui réduit le risque d’injection de code malveillant.
+
+
+### 6.9. A09:2021 - Security Logging and Monitoring Failures ✅ Respecté
+Le site enregistre les tentatives de connexion et certaines activités sensibles.
+
+Recommandation :
+
+Ajouter un système d’alertes en cas d’activité suspecte.
+
+### 6.10. A10:2021 - Server-Side Request Forgery (SSRF) ✅ Respecté
+Le site ne permet pas d’envoyer des requêtes vers des URL externes à partir d’inputs utilisateur, ce qui réduit le risque de SSRF.
+
+

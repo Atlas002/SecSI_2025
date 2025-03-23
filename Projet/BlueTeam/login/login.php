@@ -2,87 +2,6 @@
 session_start();
 include('../config/db.php'); // Connexion à la base de données
 
-/**if (isset($_POST['submit'])) {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
-    $remember = isset($_POST['remember']);
-
-    if (empty($username) || empty($password)) {
-        $error = "Veuillez remplir tous les champs.";
-    } else {
-        // Vérification des données utilisateur
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :username");
-        $stmt->execute(['username' => $username]);
-        $user = $stmt->fetch();
-
-        if ($user) {
-            // Vérification spéciale pour le compte "admin"
-            if ($user['username'] === 'admin') {
-                // Comparaison en clair pour le compte "admin"
-                if ($password === $user['password']) {
-                    $is_authenticated = true;
-                } else {
-                    $is_authenticated = false;
-                }
-            } else {
-                // Comparaison avec le mot de passe haché pour les autres utilisateurs
-                if (password_verify($password, $user['password'])) {
-                    $is_authenticated = true;
-                } else {
-                    $is_authenticated = false;
-                }
-            }
-
-            if ($is_authenticated) {
-                // Connexion réussie
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role'];
-
-                if ($remember) {
-                    // Création d'un token sécurisé
-                    $token = bin2hex(random_bytes(32));
-                    $expire_date = date('Y-m-d H:i:s', time() + (86400 * 30)); // 30 jours
-
-                    // Insérer le token en base de données
-                    $insertStmt = $pdo->prepare("INSERT INTO remember_tokens (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)");
-                    $insertStmt->execute([
-                        'user_id' => $user['id'],
-                        'token' => $token,
-                        'expires_at' => $expire_date
-                    ]);
-
-                    // Créer le cookie sécurisé
-                    setcookie('remember_token', $token, time() + (86400 * 30), '/', '', true, true);
-                }
-
-                // Redirection vers la page correspondant au rôle
-                if (isset($_SESSION['role'])) {
-                    switch (strtolower($_SESSION['role'])) {
-                        case 'admin':
-                            header("Location: ../pages/admin.php");
-                            break;
-                        case 'prof':
-                            header("Location: ../pages/prof.php");
-                            break;
-                        case 'eleve':
-                            header("Location: ../pages/eleve.php");
-                            break;
-                        default:
-                            header("Location: ../index.php"); // redirection par défaut en cas d'erreur
-                            break;
-                    }
-                    exit;
-                }
-            } else {
-                $error = "Nom d'utilisateur ou mot de passe incorrect.";
-            }
-        } else {
-            $error = "Nom d'utilisateur ou mot de passe incorrect.";
-        }
-    }
-}**/
-
 if (isset($_POST['submit'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
@@ -223,7 +142,7 @@ $page_title = "Connexion | ECE";
                     <input type="checkbox" id="remember" name="remember">
                     <label for="remember">Se souvenir de moi</label>
                 </div>
-                <a href="../reset-password/request.php" class="forgot-password">Mot de passe oublié?</a>
+                <a href="login.php" class="forgot-password">Mot de passe oublié?</a>
             </div>
             
             <button type="submit" name="submit" class="btn btn-primary btn-block">
@@ -232,7 +151,7 @@ $page_title = "Connexion | ECE";
         </form>
         
         <div class="login-footer">
-            <p>Vous n'avez pas de compte? <a href="../contact/assistance.php">Contactez l'administration</a></p>
+            <p>Vous n'avez pas de compte? <a href="https://www.ece.fr/">Contactez l'administration</a></p>
         </div>
     </div>
     
@@ -240,9 +159,9 @@ $page_title = "Connexion | ECE";
         <div class="info-card">
             <h3>Aide à la connexion</h3>
             <ul>
-                <li>Votre nom d'utilisateur est généralement votre numéro d'étudiant ou votre email professionnel.</li>
+                <li>Votre nom d'utilisateur est généralement votre initiale de nom suit de votre prénom ou votre email professionnel.</li>
                 <li>Si vous avez oublié votre mot de passe, cliquez sur "Mot de passe oublié".</li>
-                <li>Pour toute assistance, contactez le support technique au <strong>01.XX.XX.XX.XX</strong>.</li>
+                <li>Pour toute assistance, contactez le support technique au <strong>07.69.10.58.48</strong>.</li>
             </ul>
         </div>
     </div>

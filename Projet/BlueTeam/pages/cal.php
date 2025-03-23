@@ -75,6 +75,8 @@ foreach ($cours as $cours_item) {
 }
 ?>
 
+<?php include('../includes/header.php'); ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -165,3 +167,5 @@ foreach ($cours as $cours_item) {
     </div>
 </body>
 </html>
+
+<?php include('../includes/footer.php'); ?>
