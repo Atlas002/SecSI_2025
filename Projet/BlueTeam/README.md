@@ -67,14 +67,17 @@ Une image Docker a été configurée à partir de `php:8.0-apache`, qui fournit 
 # Utiliser une image officielle de PHP avec Apache
 FROM php:8.0-apache
 
-# Installer l'extension mysqli
-RUN docker-php-ext-install mysqli
+# Définir le répertoire de travail
+WORKDIR /var/www/
 
-# Copier les fichiers du projet dans le conteneur
-COPY . /var/www/html/
+# Copier les fichiers de ton projet dans le conteneur
+COPY . /var/www/
 
-# Modifier les permissions pour l'utilisateur Apache
-RUN chown -R www-data:www-data /var/www/html
+# Activer les extensions PHP nécessaires (ex: mysqli, pdo_mysql si tu utilises une BDD)
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Modifier les permissions si nécessaire
+RUN chown -R www-data:www-data /var/www/html/
 
 # Exposer le port 80 pour Apache
 EXPOSE 80
@@ -93,18 +96,29 @@ EXPOSE 80
 
 Un script shell, `deploy.sh`, a été créé pour automatiser le déploiement du site sur la machine virtuelle à chaque mise à jour du dépôt Git.
 
-Le script effectue les actions suivantes :
-1. **Mise à jour du dépôt Git** :
-   - Le script commence par se placer dans le répertoire du projet et met à jour le dépôt Git local avec la dernière version du code source en utilisant `git pull origin main`.
+```bash
+#!/bin/bash
 
-2. **Construction de l'image Docker** :
-   - Le script utilise la commande `docker build -t site-secu-si .` pour construire une nouvelle image Docker basée sur les modifications apportées au code source.
+# Déplacement dans le dossier du projet
+cd /home/ubuntu/SecSI_2025/Projet/BlueTeam
 
-3. **Suppression de l'ancien conteneur** :
-   - Si un conteneur Docker précédent existe, il est supprimé avec `docker rm -f site-secu-si`, garantissant que la nouvelle version du site sera déployée.
+# Mise à jour du code source
+git pull origin main
 
-4. **Démarrage du nouveau conteneur** :
-   - Le conteneur est lancé en arrière-plan avec `docker run -d -p 80:80 --name site-secu-si site-secu-si`.
+# Arrêter et supprimer les anciens conteneurs proprement
+docker-compose down
+# Ou pour retirer le volume persistant
+#docker-compose down -v
+
+# Reconstruction et redémarrage des conteneurs en arrière-plan
+docker-compose up -d --build
+
+# Nettoyer les anciennes images Docker inutilisées
+docker image prune -f
+
+# Vérifier que les conteneurs tournent bien
+docker ps
+```
 
 ### 4.2 Authentification Git et permissions SSH
 

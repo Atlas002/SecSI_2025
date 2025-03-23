@@ -1994,3 +1994,137 @@ main.container {
     padding: 20px;
     margin-top: 20px;
 }
+
+/* ------------------------------
+   STYLES POUR LA PAGE CAL.PHP
+   ------------------------------ */
+
+/* Style pour la sélection de classe */
+.class-selection {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+select {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Navigation des semaines */
+.week-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.current-week {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+/* Calendrier */
+.calendar {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 500;
+    border: 1px solid #34495e;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    vertical-align: top;
+    height: 80px;
+}
+
+.time-slot {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    text-align: center;
+    width: 80px;
+}
+
+.course-cell {
+    position: relative;
+}
+
+.course {
+    background-color: #e8f4fd;
+    border-left: 4px solid #3498db;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.course-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.course-details {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .week-navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    th, td {
+        padding: 8px 5px;
+        font-size: 14px;
+    }
+    
+    .time-slot {
+        width: 60px;
+    }
+    
+    .course {
+        padding: 5px;
+    }
+}

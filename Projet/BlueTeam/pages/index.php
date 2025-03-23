@@ -7,7 +7,7 @@
         <p>Votre plateforme éducative centralisée pour étudiants, enseignants et administration</p>
         <div class="hero-buttons">
             <a href="../login/login.php" class="btn btn-primary">Se connecter</a>
-            <a href="../about/about.php" class="btn btn-secondary">Découvrir l'ECE</a>
+            <a href="https://www.ece.fr/" class="btn btn-secondary">Découvrir l'ECE</a>
         </div>
     </div>
 </div>
@@ -46,7 +46,7 @@
                 </div>
                 <h3>Espace Étudiant</h3>
                 <p>Consultez vos résultats, emplois du temps, cours en ligne et documents pédagogiques.</p>
-                <a href="../student/dashboard.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
+                <a href="../login/login.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
             </div>
             
             <div class="feature-card">
@@ -55,7 +55,7 @@
                 </div>
                 <h3>Espace Enseignant</h3>
                 <p>Gérez vos cours, évaluations, communications avec les étudiants et rendus de projets.</p>
-                <a href="../teacher/dashboard.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
+                <a href="../login/login.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
             </div>
             
             <div class="feature-card">
@@ -64,7 +64,7 @@
                 </div>
                 <h3>Espace Administration</h3>
                 <p>Administrez les utilisateurs, programmes, emplois du temps et ressources de l'établissement.</p>
-                <a href="../admin/dashboard.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
+                <a href="../login/login.php" class="card-link">Accéder <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
@@ -94,19 +94,19 @@
         <h2>Ce qu'ils disent de <span class="highlight">l'ECE</span></h2>
         <div class="testimonial-container">
             <div class="testimonial">
-                <div class="quote">"L'environnement d'apprentissage à l'ECE est exceptionnel, avec des équipements modernes et un corps enseignant dévoué."</div>
+                <div class="quote">"L'environnement d'apprentissage à l'ECE est exceptionnel, mais ils veulent pas ajouter des prises."</div>
                 <div class="author">
                     <div class="author-info">
-                        <div class="name">Marie Dubois</div>
+                        <div class="name">Jules Dias</div>
                         <div class="role">Étudiante en 3ème année</div>
                     </div>
                 </div>
             </div>
             <div class="testimonial">
-                <div class="quote">"En tant qu'enseignant, j'apprécie la plateforme numérique qui facilite énormément les interactions avec mes étudiants."</div>
+                <div class="quote">"En tant qu'enseignant, j'apprécie ce projet et je pense leur mettre 20/20."</div>
                 <div class="author">
                     <div class="author-info">
-                        <div class="name">Dr. Thomas Laurent</div>
+                        <div class="name">Dr. TAJINI BADR</div>
                         <div class="role">Professeur d'Informatique</div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
                 </div>
             </div>
         </div>
-        <a href="../calendar/full.php" class="btn btn-outlined">Voir tout le calendrier</a>
+        <a href="cal.php" class="btn btn-outlined">Voir tout le calendrier</a>
     </div>
 </section>
 
