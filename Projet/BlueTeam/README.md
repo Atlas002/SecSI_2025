@@ -265,7 +265,7 @@ try {
 Pour récupérer les informations de la table `users`, un attaquant pourrait/devrait utiliser une requête SQL malveillante comme suit :
 
 ```sql
- Salle 101'); SELECT * FROM eleves; -- 
+ Salle 101'); SELECT * FROM users; -- 
 ```
 Dans l'input salle
 

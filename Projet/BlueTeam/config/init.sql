@@ -46,6 +46,20 @@ CREATE TABLE IF NOT EXISTS notes (
     date_evaluation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (eleve_id) REFERENCES eleves(id) ON DELETE CASCADE,
     FOREIGN KEY (cours_id) REFERENCES cours(id) ON DELETE CASCADE
+); 
+
+CREATE TABLE IF NOT EXISTS travaux (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    eleve_id INT NOT NULL,
+    cours_id INT NOT NULL,
+    titre VARCHAR(255) NOT NULL,
+    descriptions TEXT,
+    nom_fichier VARCHAR(255),
+    chemin_fichier VARCHAR(255),
+    date_soumission DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('soumis', 'évalué') DEFAULT 'soumis',
+    FOREIGN KEY (eleve_id) REFERENCES eleves(id),
+    FOREIGN KEY (cours_id) REFERENCES cours(id)
 );
 
 CREATE TABLE IF NOT EXISTS remember_tokens (
@@ -66,13 +80,14 @@ INSERT INTO users (username, email, password, role) VALUES
 ('dtheophile', 'theophile.dutrey@edu.ece.fr', MD5('of9è3gE6=0Kf'), 'eleve'), -- 4
 ('ralexis', 'alexis.raynal@edu.ece.fr', MD5('z7n4-RqwuT-Rffff'), 'eleve'),   -- 5
 ('gmathis', 'mathis.gras@edu.ece.fr', MD5('bonjourcenestpaspossibledemebrutforce'), 'eleve'), -- 6
-('mlefevre', 'm.lefevre@mail.com', MD5('mmhcaca7u8y3fS'), 'prof'),   -- 7
+('mlefevre', 'm.lefevre@mail.com', MD5('Jackiequinoa'), 'prof'),   -- 7
 ('vmorel', 'v.morel@mail.com', MD5('P_Ut4FCccx4tmP'), 'prof'),  -- 8
 ('btajini', 'b.tajini@mail.com', MD5('oibueqf8_7t3vz,09'), 'prof'),  -- 9
 ('apoireaux', 'antoine.poireaux@edu.ece.fr', MD5('0iJccoucouoiseau'), 'eleve'), -- 10
 ('bvallange', 'berenice.vallange@edu.ece.fr', MD5('Uc5-YrSw0_7'), 'eleve'), -- 11
 ('pfourtou', 'p.fourtou@mail.com', MD5('password'), 'prof'), -- 12
 ('jfhittenger', 'j.fhittenger@mail.com', MD5('=P0TgD4sX21___DsQ'), 'prof');  -- 13
+('atagoniste', 'alban.tagoniste@edu.ece.fr' , MD5('hnedf7_5o0c-1&AwPgf5' ), 'eleve'), -- 14
 
 -- Ajout des élèves
 INSERT INTO eleves (user_id, nom, prenom, date_naissance, classe) VALUES
@@ -83,6 +98,7 @@ INSERT INTO eleves (user_id, nom, prenom, date_naissance, classe) VALUES
 (6, 'GRAS', 'Mathis', '2003-01-05', 'Cyb Grp 3'),
 (10, 'POIREAUX', 'Antoine', '2003-01-06', 'PEI Grp 1'),
 (11, 'VALLANGE', 'Bérénice', '2003-01-07', 'PEI Grp 2');
+(14, 'TAGONISTE', 'Alban', '2003-01-08', 'Cyb Grp 1');
 
 -- Ajout des professeurs
 INSERT INTO profs (user_id, nom, prenom, date_naissance, matiere) VALUES

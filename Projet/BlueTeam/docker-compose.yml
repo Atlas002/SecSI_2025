@@ -6,9 +6,10 @@ services:
       - .env
     container_name: site-web-secussi
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html/
+      - uploaded_files:/var/www/html/uploads
     depends_on:
       - db
     environment:
@@ -29,7 +30,6 @@ services:
       volumes:
         - mysql_data:/var/lib/mysql
         - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
-
-
 volumes:
   mysql_data:
+  uploaded_files:

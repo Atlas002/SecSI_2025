@@ -4,9 +4,13 @@ require_once '../config/db.php';
 
 // Vérifier si l'utilisateur est connecté et a le rôle 'eleve'
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'eleve') {
-    header('Location: login.php');
+    header('Location: ../login/login.php');
     exit;
 }
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Récupérer les informations de l'élève
 $user_id = $_SESSION['user_id'];
@@ -39,6 +43,16 @@ $stmt = $pdo->prepare("SELECT n.*, c.matiere, c.horaire, p.nom as prof_nom, p.pr
 $stmt->execute([$eleve['id']]);
 $notes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Récupérer les travaux soumis par l'élève
+$stmt = $pdo->prepare("SELECT t.*, c.matiere, p.nom as prof_nom, p.prenom as prof_prenom 
+                      FROM travaux t 
+                      JOIN cours c ON t.cours_id = c.id 
+                      JOIN profs p ON c.prof_id = p.id 
+                      WHERE t.eleve_id = ? 
+                      ORDER BY t.date_soumission DESC");
+$stmt->execute([$eleve['id']]);
+$travaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Calculer la moyenne générale
 $moyenne_generale = 0;
 $nombre_notes = count($notes);
@@ -70,6 +84,79 @@ foreach ($notes_par_matiere as $matiere => $notes_matiere) {
 
 // Formater la date de naissance
 $date_naissance_formattee = date('d/m/Y', strtotime($eleve['date_naissance']));
+
+// Traitement du formulaire de soumission de travail
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_travail'])) {
+    $cours_id = $_POST['cours_id'];
+    $titre = $_POST['titre'];
+    $descriptions = $_POST['descriptions'];
+    
+    // Variables pour le fichier
+    $nom_fichier = '';
+    $chemin_fichier = '';
+    $upload_successful = true;
+    $message = '';
+
+    // Vérifier si un fichier a été téléchargé
+    if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $upload_dir = '../uploads/travaux/';
+        
+        // Créer le répertoire s'il n'existe pas
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        
+        $nom_fichier = basename($_FILES['fichier']['name']);
+        $fichier_extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
+        $fichier_unique = uniqid() . '_' . $nom_fichier;
+        $chemin_fichier = $upload_dir . $fichier_unique;
+        
+        // Extensions autorisées
+        $extensions_autorisees = array('pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'php', 'php3');
+        
+        // Vérifier l'extension
+        if (!in_array($fichier_extension, $extensions_autorisees)) {
+            $upload_successful = false;
+            $message = "Erreur: Seuls les fichiers PDF, DOC, DOCX, TXT, JPEG, JPG, PNG et ZIP sont autorisés.";
+        }
+        // Vérifier la taille du fichier (max 5MB)
+        else if ($_FILES['fichier']['size'] > 5000000) {
+            $upload_successful = false;
+            $message = "Erreur: La taille du fichier ne doit pas dépasser 5MB.";
+        }
+        // Télécharger le fichier
+        else if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $chemin_fichier)) {
+            $upload_successful = false;
+            $message = "Erreur lors du téléchargement du fichier.";
+        }
+    }
+
+    // Si le téléchargement a réussi (ou s'il n'y a pas de fichier), insérer dans la base de données
+    if ($upload_successful) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO travaux (eleve_id, cours_id, titre, descriptions, nom_fichier, chemin_fichier, date_soumission) 
+                                  VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$eleve['id'], $cours_id, $titre, $descriptions, $nom_fichier, $chemin_fichier]);
+            $message = "Votre travail a été soumis avec succès.";
+            $class_alert = "alert-success";
+            
+            // Rediriger pour éviter la soumission multiple du formulaire
+            header("Location: eleve.php?submit_success=1");
+            exit;
+        } catch (PDOException $e) {
+            $message = "Erreur: " . $e->getMessage();
+            $class_alert = "alert-danger";
+        }
+    } else {
+        $class_alert = "alert-danger";
+    }
+}
+
+// Message de succès après redirection
+if (isset($_GET['submit_success'])) {
+    $message = "Votre travail a été soumis avec succès.";
+    $class_alert = "alert-success";
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +171,7 @@ $date_naissance_formattee = date('d/m/Y', strtotime($eleve['date_naissance']));
 </head>
 <body>
     <header>
-        <h1>Espace Professeur</h1>
+        <h1>Espace Élève</h1>
         <nav>
             <ul>
                 <li><a href="index.php">Accueil</a></li>
@@ -96,6 +183,12 @@ $date_naissance_formattee = date('d/m/Y', strtotime($eleve['date_naissance']));
 
     <main class="dashboard-main">
         <div class="container">
+            <?php if (isset($message)): ?>
+                <div class="alert <?php echo $class_alert; ?>">
+                    <?php echo $message; ?>
+                </div>
+            <?php endif; ?>
+            
             <div class="dashboard-grid">
                 <!-- Carte de profil -->
                 <div class="dashboard-card profile-card">
@@ -177,6 +270,88 @@ $date_naissance_formattee = date('d/m/Y', strtotime($eleve['date_naissance']));
                     </div>
                 </div>
 
+                <!-- Carte de soumission de travail -->
+                <div class="dashboard-card submission-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-upload"></i> Soumettre un travail</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="eleve.php" method="post" enctype="multipart/form-data" class="submission-form">
+                            <div class="form-group">
+                                <label for="cours_id">Cours:</label>
+                                <select name="cours_id" id="cours_id" required>
+                                    <option value="">Sélectionnez un cours</option>
+                                    <?php foreach ($cours as $course): ?>
+                                        <option value="<?php echo $course['id']; ?>">
+                                            <?php echo htmlspecialchars($course['matiere'] . ' - Prof. ' . $course['prof_prenom'] . ' ' . $course['prof_nom']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="titre">Titre du travail:</label>
+                                <input type="text" name="titre" id="titre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="descriptions">descriptions:</label>
+                                <textarea name="descriptions" id="descriptions" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="fichier">Fichier (PDF, DOC, DOCX, TXT, JPEG, PNG, ZIP - max 5Mo):</label>
+                                <input type="file" name="fichier" id="fichier">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" name="submit_travail" class="btn-submit">Soumettre le travail</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Carte des travaux soumis -->
+                <div class="dashboard-card submissions-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-tasks"></i> Mes travaux soumis</h2>
+                    </div>
+                    <div class="card-body">
+                        <?php if (count($travaux) > 0): ?>
+                            <div class="submissions-list">
+                                <?php foreach ($travaux as $travail): ?>
+                                    <div class="submission-item">
+                                        <div class="submission-header">
+                                            <h3><?php echo htmlspecialchars($travail['titre']); ?></h3>
+                                            <span class="submission-date">
+                                                <i class="fas fa-calendar"></i> 
+                                                <?php echo date('d/m/Y H:i', strtotime($travail['date_soumission'])); ?>
+                                            </span>
+                                        </div>
+                                        <div class="submission-details">
+                                            <p><strong>Cours:</strong> <?php echo htmlspecialchars($travail['matiere']); ?></p>
+                                            <p><strong>Professeur:</strong> <?php echo htmlspecialchars($travail['prof_prenom'] . ' ' . $travail['prof_nom']); ?></p>
+                                            <p><strong>Descriptions:</strong> <?php echo nl2br(htmlspecialchars($travail['descriptions'])); ?></p>
+                                            
+                                            <?php if ($travail['nom_fichier']): ?>
+                                                <p>
+                                                    <strong>Fichier:</strong> 
+                                                    <a href="<?php echo htmlspecialchars(str_replace('../', '', $travail['chemin_fichier'])); ?>" target="_blank">
+                                                        <i class="fas fa-file"></i> <?php echo htmlspecialchars($travail['nom_fichier']); ?>
+                                                    </a>
+                                                </p>
+                                            <?php else: ?>
+                                                <p><strong>Fichier:</strong> Aucun fichier joint</p>
+                                            <?php endif; ?>
+                                            
+                                            <p><strong>Statut:</strong> <span class="status-badge status-<?php echo strtolower($travail['status']); ?>"><?php echo $travail['status']; ?></span></p>
+                                            
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p class="no-data">Vous n'avez soumis aucun travail pour le moment.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <!-- Carte des notes détaillées -->
                 <div class="dashboard-card detailed-grades-card">
                     <div class="card-header">
@@ -247,3 +422,11 @@ $date_naissance_formattee = date('d/m/Y', strtotime($eleve['date_naissance']));
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+

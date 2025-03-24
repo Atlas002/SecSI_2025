@@ -1579,6 +1579,198 @@ footer {
     margin-top: 40px;
 }
 
+
+/* Styler les alertes */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: opacity 0.5s ease;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Styler la carte de soumission de travail */
+.submission-card .card-body {
+    padding: 20px;
+}
+
+.submission-form .form-group {
+    margin-bottom: 15px;
+}
+
+.submission-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.submission-form input[type="text"],
+.submission-form select,
+.submission-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.submission-form textarea {
+    resize: vertical;
+}
+
+.submission-form .form-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.btn-submit {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+/* Styler la liste des travaux soumis */
+.submissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.submission-item {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.submission-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.submission-date {
+    color: #666;
+    font-size: 14px;
+}
+
+.submission-details {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.submission-details p {
+    margin: 8px 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-soumis {
+    background-color: #FFD700;
+    color: #333;
+}
+
+.status-évalué {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.teacher-comment {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f0f7ff;
+    border-left: 3px solid #3498db;
+    border-radius: 4px;
+}
+
+.teacher-comment h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #3498db;
+    font-size: 16px;
+}
+
+.teacher-comment p {
+    margin: 0;
+}
+
+.submission-details a {
+    color: #3498db;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s;
+}
+
+.submission-details a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Styler le message de fichier manquant */
+.no-data {
+    text-align: center;
+    padding: 30px 0;
+    color: #666;
+    font-style: italic;
+}
+
+/* Rendre les cartes responsive */
+@media (max-width: 768px) {
+    .submission-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .submission-date {
+        margin-top: 5px;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        margin-top: 5px;
+    }
+}
+
 /* Media queries pour la responsivité */
 @media (max-width: 992px) {
     .dashboard-grid {

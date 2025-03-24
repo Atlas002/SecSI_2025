@@ -4,7 +4,7 @@ require_once '../config/db.php';
 
 // Vérifier si l'utilisateur est connecté et est un professeur
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'prof') {
-    header('Location: login.php');
+    header('Location: ../login/login.php');
     exit;
 }
 
