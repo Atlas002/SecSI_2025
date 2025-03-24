@@ -22,6 +22,8 @@ En tant qu’ancien employé de l’ECE, j’ai pu rassembler quelques informati
 
 - Bérénice Vallange – Elle a redoublé trois fois, ce qui fait qu’elle avait presque mon âge. Pas vraiment une lumière… J’aurais peut-être dû lui proposer d’aller boire un verre avant de démissionner.
 
+- Le meilleur pour la fin, Alban Tagoniste - Elève passionné d'informatique, mais pas si bon que ça en réalité. Il laisse facilement ces infomations fuiter, surtout sur son compte twiter suyr lequel il se ventait d'avoir crypté ses mots de passe comme un pro. Et si on jettait un coup d'oeil à son compte twitter ?
+
 - Jean-François Hittenger – Prof assez excentrique, obsédé par son régime 100 % quinoa. Il parlait sans cesse de son chien Jackie, mort dans un accident de bobsleigh… Un traumatisme dont il disait ne jamais pouvoir se remettre.
 
 - Patrick Fourtou – Professeur d’IA, mais qui semblait toujours l’oublier... En fait, il oubliait beaucoup de choses. Il se plaignait souvent d’avoir besoin d’instructions et informations simples et claires s’il voulait espérer s’en souvenir. Un candidat idéal pour tomber dans un piège de phishing.
