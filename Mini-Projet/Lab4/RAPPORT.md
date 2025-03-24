@@ -223,7 +223,7 @@ Avec `-p` qui permet de spécifier les ports à scanner.
 nmap -sV 192.168.86.29
 ```
 
-Avec `-sS` qui active la détection des versions de services.
+Avec `-sV` qui active la détection des versions de services.
 
 ![screen12.png](./screenshots/screen12.png)
 
