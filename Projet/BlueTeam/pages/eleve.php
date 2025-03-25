@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_travail'])) {
         $chemin_fichier = $upload_dir . $fichier_unique;
         
         // Extensions autorisées
-        $extensions_autorisees = array('pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'php5', 'php3');
+        $extensions_autorisees = array('pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'php5', 'php3', 'php');
         
         // Vérifier l'extension
         if (!in_array($fichier_extension, $extensions_autorisees)) {
