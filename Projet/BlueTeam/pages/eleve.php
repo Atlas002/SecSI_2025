@@ -332,9 +332,10 @@ if (isset($_GET['submit_success'])) {
                                             <?php if ($travail['nom_fichier']): ?>
                                                 <p>
                                                     <strong>Fichier:</strong> 
-                                                    <a href="<?php echo htmlspecialchars(str_replace('../', '', $travail['chemin_fichier'])); ?>" target="_blank">
-                                                        <i class="fas fa-file"></i> <?php echo htmlspecialchars($travail['nom_fichier']); ?>
+                                                    <a href="<?php echo str_replace('../../', '', $travail['chemin_fichier']); ?>" target="_blank">
+                                                        <i class="fas fa-file"></i> <?php echo $travail['nom_fichier']; ?>
                                                     </a>
+
                                                 </p>
                                             <?php else: ?>
                                                 <p><strong>Fichier:</strong> Aucun fichier joint</p>
