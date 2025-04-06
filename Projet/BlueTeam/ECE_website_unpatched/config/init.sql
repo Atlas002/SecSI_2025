@@ -87,7 +87,7 @@ INSERT INTO users (username, email, password, role) VALUES
 ('bvallange', 'berenice.vallange@edu.ece.fr', MD5('Uc5-YrSw0_7'), 'eleve'), -- 11
 ('pfourtou', 'p.fourtou@mail.com', MD5('password'), 'prof'), -- 12
 ('jfhittenger', 'j.fhittenger@mail.com', MD5('=P0TgD4sX21___DsQ'), 'prof'),  -- 13
-('atagoniste', 'alban.tagoniste@edu.ece.fr' , MD5('hnedf7_5o0c-1&AwPgf5'), 'eleve'); -- 14
+('talban', 'alban.tagoniste@edu.ece.fr' , MD5('hnedf7_5o0c-1&AwPgf5'), 'eleve'); -- 14
 
 -- Ajout des élèves
 INSERT INTO eleves (user_id, nom, prenom, date_naissance, classe) VALUES
@@ -105,7 +105,7 @@ INSERT INTO profs (user_id, nom, prenom, date_naissance, matiere) VALUES
 (7, 'Lefevre', 'Mathieu', '1985-09-10', 'Prout'),
 (8, 'Morel', 'Vincent', '1985-09-10', 'Mathematiques'),
 (9, 'Tajini', 'BADR', '1985-09-10', 'Securite des SI'),
-(12, 'Fourtou', 'Pierre', '1985-09-10', 'Deep Learning'),
+(12, 'Fourtou', 'Patrick', '1985-09-10', 'Deep Learning'),
 (13, 'Hittenger', 'Jean-François', '1985-09-10', 'Physique');
 
 -- Ajout des cours

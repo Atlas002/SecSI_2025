@@ -1,0 +1,35 @@
+# Docker-compose file for Mathis Docker Workspace, dot not use it for the project itself !
+services:
+  web:
+    build: .
+    env_file:
+      - .env
+    container_name: site-web-secussi
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html/
+      - uploaded_files:/var/www/html/uploads
+    depends_on:
+      - db
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
+    restart: always
+  db:
+      image: mysql:8.0
+      container_name: mysql-db
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: rootXfo9_72fQ-t2
+        MYSQL_DATABASE: ece_db
+        MYSQL_USER: user
+        MYSQL_PASSWORD: nv7_4f8X.g1qPPP
+      ports:
+        - "3306:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+        - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  mysql_data:
+  uploaded_files:

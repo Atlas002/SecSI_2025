@@ -99,7 +99,7 @@ services:
       - .env
     container_name: site-web-secussi
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - .:/var/www/html
     depends_on:
@@ -128,6 +128,22 @@ volumes:
   mysql_data:
 ```
 
+Si vous souhaitez déployer notre projet en local sur votre machine remplacez :
+```yaml
+ports:
+      - "80:80"
+```
+par :
+```yaml
+ports:
+      - "8080:80"
+```
+
+Puis faites un :
+```bash
+docker-compose up -d --build
+```
+
 ---
 
 ## 4. Déploiement du site sur la machine virtuelle
@@ -140,7 +156,7 @@ Un script shell, `deploy.sh`, a été créé pour automatiser le déploiement du
 #!/bin/bash
 
 # Déplacement dans le dossier du projet
-cd /home/ubuntu/SecSI_2025/Projet/BlueTeam
+cd /home/ubuntu/SecSI_2025/Projet/BlueTeam/ECE_website_unpatched
 
 # Mise à jour du code source
 git pull origin main
@@ -217,7 +233,17 @@ Voici la structure du site web :
 
 ---
 
-## 6. Respect des normes OWASP Top 10 2021
+## 6. Une fois le site deployé
+
+Avec toutes ces ressources nous avons pu correctement déployer notre site web de manière public en utilisant ce lien (normalement inactif à partir du 6 Avril 2025) :
+
+http://35.180.94.78
+
+Pour "aiguiller" le travail de la RED Yeam, la Purple Team a rédigé un document donnant des informatiosn sur l'interface web que nous avons développé.
+Ce lot d'informations est consultable dans le dossier `Purple Team` sous le nom `situation.md`.
+---
+
+## 7. Respect des normes OWASP Top 10 2021
 
 ### 6.1. A01:2021 - Broken Access Control ✅ Respecté
 Le site implémente des contrôles d’accès pour limiter l’accès à certaines pages en fonction du rôle des utilisateurs (ex. professeurs, élèves, administrateurs). Cependant, la faiblesse liée à Patrick Fourtou (mot de passe faible) peut permettre un accès non autorisé si un attaquant réussit à prendre son compte.
@@ -241,9 +267,12 @@ Remplacer MD5 par bcrypt ou Argon2 pour stocker les mots de passe.
 
 Mettre en place un certificat SSL et forcer le passage en HTTPS.
 
-### 6.3. A03:2021 - Injection 🟠 Faiblesse
-Utilisation des requêtes préparées avec PDO pour éviter l’injection SQL. Ceci est fait dans la page db.php et l'ensemble du site sauf la faille utilisent ceette méthode.
+### 6.3. A03:2021 - Injection ❌ Non appliqué
+- **Première faille :**
 
+Utilisation des requêtes préparées avec PDO pour éviter l’injection SQL. Ceci est fait dans la page db.php et l'ensemble du site sauf la page `prof.php` qui n'utilise pas de PDO mais qui emploie la méthode `mysqli`.
+
+Méthode PDO :
 ```php
 <?php
 $host = getenv('DB_HOST');
@@ -260,6 +289,27 @@ try {
 ?>
 ```
 
+Méthode mysqli :
+```php
+<?php
+function getVulnerableConnection() {
+    $host = getenv('DB_HOST');
+    $dbname = getenv('DB_NAME');
+    $username = getenv('DB_USER');
+    $password = getenv('DB_PASS');
+    
+    // Créer une connexion mysqli qui permet les requêtes multiples
+    $mysqli = new mysqli($host, $username, $password, $dbname);
+    
+    if ($mysqli->connect_error) {
+        die("Connexion échouée : " . $mysqli->connect_error);
+    }
+    
+    return $mysqli;
+}
+?>
+```
+
 ⚠️ La page prof.php est vulnérable aux injections SQL via l’input "salle", ce qui permettrait à un attaquant de manipuler la base de données.
 
 Pour récupérer les informations de la table `users`, un attaquant pourrait/devrait utiliser une requête SQL malveillante comme suit :
@@ -269,11 +319,31 @@ Pour récupérer les informations de la table `users`, un attaquant pourrait/dev
 ```
 Dans l'input salle
 
-Recommandation :
+![alt text](images_README/image_injec_SQL.png)
+
+![alt text](images_README/image_res_injec_SQL.png)
+
+**Recommandation :**
 
 Utiliser des requêtes préparées avec PDO/MySQLi.
 
 Échapper et valider toutes les entrées utilisateur.
+
+- **Deuxième faille :**
+
+Possibilité d'injéction XSS/LFI dans la page élève. La RED Team devra parvenir à obtenir l'identifiant d'un élève à partir du fichier `situation.md` qui leur a été communiqué (partie OSINT) et accéder à cette page.
+
+Une fois l'accès à la page obtenue, la RED Team devra effectuer des tests pour vérifier que la seule entrée de fichiers du site est bien sécurisée. Il devront alors remarquer que la phrase "Fichier (PDF, DOC, DOCX, TXT, JPEG, PNG, ZIP - max 5Mo):" n'est que un avertissement car aucune vérificétion n'est faite sur le type de fichier. 
+Il est donc possible de faire une injection LFI pour potentiellement exécuter du code sur le docker hébergeant notre site :
+
+![alt text](images_README/image_LFI_pageeleve.png)
+
+**Recommandation :**
+
+- Instaurer une with liste pour vérifier les type de fichiers autorisés;
+- Définir des fonctions et appelle de fonctions "interdites" dans nos fichiers php.
+- Réduire les droits de nos conteneurs.
+
 
 ### 6.4. A04:2021 - Insecure Design ✅ Respecté
 Le site suit une certaine structure logique avec des rôles bien définis et des fichiers de configuration sécurisés. Notaement avec le fichier `php.ini` et `.htaccess`.
