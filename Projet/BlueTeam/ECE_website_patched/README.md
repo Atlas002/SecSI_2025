@@ -52,12 +52,17 @@ Protection CSRF :
 Génération d'un jeton unique pour chaque session
 Validation du jeton à chaque tentative de connexion pour prévenir les attaques par falsification de requête
 
-### 4. Déploiement de Snort IDS
 
-- Problème initial : Absence d'un système de détection d'intrusion
-Solution appliquée : Installation et configuration de Snort sur le serveur
-Impact :
+### 4. Réflexion sur l’intégration de Snort IDS
 
-- Détection en temps réel des tentatives d'attaque
-Alerte et journalisation des activités suspectes
-Surveillance du trafic réseau pour identifier les modèles d'attaque connus
+- **Problème initial** : Le site ne disposait d’aucun système de détection d’intrusion (IDS), ce qui laissait l’infrastructure vulnérable à des attaques réseau non détectées, comme des scans de ports, des tentatives d’exploitation de failles connues ou des comportements anormaux.
+
+- **Tentatives d’implémentation** :
+  - Nous avons d’abord envisagé de déployer **Snort** sur une **instance AWS dédiée** jouant le rôle de **machine d’analyse**. L’objectif était de rediriger le trafic réseau du serveur via le **Traffic Mirroring** d’AWS pour permettre une analyse complète par Snort.
+  - Toutefois, cette approche nécessitait l’utilisation d’instances AWS **compatibles avec la technologie Nitro**, ce qui n’est pas le cas des instances gratuites ou basiques. L’activation du Traffic Mirroring aurait donc impliqué des **coûts supplémentaires**, ce que nous avons jugé inadapté dans le cadre d’un projet académique.
+  - En alternative, nous avons tenté d’**installer Snort directement sur la VM hébergeant le site**. Cette solution aurait permis une surveillance locale du trafic sans mirroring. Cependant, nous avons été confrontés à des **limitations d’espace disque** sur cette instance. Malgré plusieurs optimisations, il aurait été nécessaire d’**augmenter le volume EBS**, ce qui là encore impliquait un surcoût.
+
+- **Décision prise** :
+  - Compte tenu du **contexte pédagogique** du projet et de l’objectif de démonstration, nous avons choisi de **ne pas aller jusqu’au déploiement final de Snort** pour des raisons de **coût** et de **ressources techniques limitées**.
+  - Néanmoins, cette réflexion nous a permis de **documenter précisément les étapes nécessaires à une future implémentation réelle** de Snort dans un environnement cloud (type d’instance requis, configuration du mirroring, gestion du stockage, etc.).
+  - Cette démarche a enrichi notre vision globale de la sécurité réseau et nous a permis d'anticiper les contraintes techniques et économiques liées à la mise en place d’un IDS dans un environnement de production.
