@@ -16,7 +16,6 @@ services:
       - APACHE_RUN_USER=#1000
       - APACHE_RUN_GROUP=#1000
     restart: always
-    privileges : true
   db:
       image: mysql:8.0
       container_name: mysql-db
