@@ -269,11 +269,29 @@ Une fois le script déposé, il nous suffit simplement de naviguer vers l’empl
 
 ## 4. Post-Exploitation et Maintien d’Accès
 
-### 4.a. Élévation de privilèges (Privilege Escalation) + tentative de docker escape
-#### **Accès root** :  
-  Comme le service web était configuré de manière laxiste, nous avions déjà pratiquement les droits root dès le reverse shell. Toutefois, à des fins de démonstration, nous avons préparé des outils comme linPEAS ou GTFObins pour repérer les chemins d’élévation de privilèges si besoin.
-  Ayant également remarqué par la présence d’un Dockerfile que nous étions dans un container, nous avons cherché à accéder à la machine hôte. Néanmoins, il semblerait que la configuration des containers ne nous permette pas de s’en échapper . (a ajuster en fonctions des infos dispo, parler potentiellement du dockerfile du serveur comme preuve, parler du –privileged et/ou des volumes montés)
+### 4.a. Recherche d’informations et exfiltration de données
 
+Après avoir obtenu un shell interactif via notre reverse shell, nous avons entrepris de **rechercher des fichiers intéressants** sur la machine compromise. L’examen de l’arborescence et des fichiers de configuration nous a permis de repérer un fichier nommé `init.sql`, contenant vraisemblablement la base de données initiale du serveur.  
+
+#### Exploration du contenu de la machine
+- À l’aide de commandes telles que `ls -la`, `find / -type f -iname "*.sql"` et des recherches manuelles, nous avons découvert ce fichier critique.  
+- Les captures d’écran démontrent comment nous avons localisé et confirmé l’existence de `init.sql`.  
+
+![35.png](./screenshots/35.png)
+
+![36.png](./screenshots/36.png)
+
+On constate avec la commande `cat` que le fichier contient l'initialisation de l'entièreté de la base de donnée 
+
+![30.png](./screenshots/30.png)
+
+#### Exfiltration discrète
+- Afin de récupérer ce fichier en toute discrétion, nous l’avons copié dans iun fichier texte et déplacé dans un répertoire déjà accessible depuis l’extérieur (ex. `/uploads/travaux`).
+- De cette façon, le téléchargement est **banalisé** puisqu’un simple `wget` nous permet de le récupérer sans alerter le pare-feu ou un IDS, qui ne voit qu’un trafic web normal.  
+
+![37.png](./screenshots/37.png)
+
+![38.png](./screenshots/38.png)
 
 ### 4.b. Recherche d’informations et exfiltration de données (passer en 4.a?)
 #### **Stratégie** :  
