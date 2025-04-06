@@ -293,35 +293,30 @@ Une fois le script déposé, il nous suffit simplement de naviguer vers l’empl
 
 ## 5. Recommandations
 
-### 5.a. Vulnérabilités à corriger d’urgence
-1. **Renforcer la sécurité du formulaire d’authentification** :  
-   - Éliminer les failles d’injection SQL.  
-   - Imposer des mots de passe forts et restreindre la tentative de bruteforce (taux de requêtes, captcha, etc.).
+### 5.a Renforcement des Pratiques de Développement
 
-2. **Corriger la configuration du serveur et du conteneur** :  
-   - Supprimer l’accès direct au répertoire d’upload ou mettre en place une validation stricte des fichiers.  
-   - Durcir les règles d’accès SSH (filtres sur IP, authentification par clé, etc.).
+Il est crucial d'investir dans la formation continue des développeurs, notamment des stagiaires, sur les meilleures pratiques en matière de sécurité. Par exemple, organiser des ateliers mensuels sur les failles courantes comme les injections SQL et les moyens de les éviter. De plus, intégrer des outils d'analyse statique de code dans le processus de développement permettra de détecter automatiquement les vulnérabilités avant le déploiement.
 
-3. **Mettre en place le chiffrement strict des communications** :  
-   - Forcer l’utilisation de HTTPS pour toutes les pages (HSTS, redirection 301).  
-   - Vérifier la validité et la configuration du certificat SSL.
+### 5.b Sécurisation des Comptes et des Mots de Passe
 
-### 5.b. Conseils sur les bonnes pratiques
-1. **Formation du personnel** :  
-   - Sensibiliser les professeurs et les étudiants à la sécurité, notamment sur le partage d’informations en ligne (réseaux sociaux).  
-   - Effectuer des campagnes de phishing internes pour entraîner les utilisateurs à reconnaître des e-mails suspects.
+L'implémentation d'une politique stricte de gestion des mots de passe est essentielle. Par exemple, exiger des mots de passe complexes avec au moins 12 caractères, incluant des majuscules, des chiffres, et des symboles. Activer l'authentification à deux facteurs (2FA) pour tous les comptes, en particulier ceux des administrateurs, ajoutera une couche supplémentaire de sécurité.
 
-2. **Mises à jour et maintenance** :  
-   - Appliquer régulièrement les patchs de sécurité sur le CMS, les plugins et le serveur.  
-   - Mettre en place un monitoring actif et des tests de vulnérabilités périodiques.
+### 5.c Sécurisation des Applications Web
 
-3. **Gestion des accès et des privilèges** :  
-   - Établir le principe du moindre privilège pour les comptes et les services.  
-   - Archiver et supprimer les comptes inactifs ou anciens étudiants/professeurs.
+La migration vers HTTPS est indispensable pour chiffrer les communications entre les utilisateurs et le serveur. Utiliser des requêtes préparées pour les interactions avec la base de données permettra de prévenir les injections SQL. Par exemple, au lieu de construire des requêtes SQL dynamiquement avec des entrées utilisateur, utiliser des paramètres liés.
 
-4. **Logs et détection d’intrusions** :  
-   - Mettre en place des journaux d’audit détaillés et des alertes en cas d’activité suspecte.  
-   - Utiliser un SIEM (Wazuh pour linux) pour corréler les événements et identifier rapidement une intrusion.
+### 5.d Surveillance et Détection des Intrusions
+
+Mettre en place un système de gestion des informations et des événements de sécurité (SIEM) permettra de surveiller en temps réel les activités suspectes. Configurer des alertes pour des comportements anormaux, comme plusieurs tentatives de connexion échouées, aidera à détecter rapidement les tentatives d'intrusion.
+
+### 5.e Sécurisation des Infrastructures
+
+Appliquer régulièrement les mises à jour de sécurité pour tous les systèmes et logiciels est crucial. Configurer des règles de pare-feu strictes pour limiter l'accès aux services non essentiels et segmenter le réseau pour isoler les environnements sensibles.
+
+### 5.f Sensibilisation des Utilisateurs
+
+Enfin, sensibiliser les utilisateurs aux techniques de phishing et aux bonnes pratiques en matière de cybersécurité est essentiel. Par exemple, organiser des simulations de phishing pour éduquer les utilisateurs sur la manière de reconnaître et de réagir aux tentatives de phishing.
+
 
 ---
 
