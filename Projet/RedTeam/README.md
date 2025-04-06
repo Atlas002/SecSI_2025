@@ -322,11 +322,12 @@ Enfin, sensibiliser les utilisateurs aux techniques de phishing et aux bonnes pr
 
 ## Conclusion
 
-Le portail ECE présente plusieurs failles significatives, permettant à un attaquant persévérant d’en prendre rapidement le contrôle total. Les failles de conception (formulaire web, répertoires non sécurisés), combinées à une gestion insuffisante de la sécurité au niveau des conteneurs et des bases de données, exposent l’infrastructure à des risques majeurs (vol de données, défaçage, altération des contenus pédagogiques).
+Le test d'intrusion mené par l'équipe Red Team sur le portail ECE a révélé des vulnérabilités critiques, notamment des pratiques de développement non sécurisées et des configurations de serveur laxistes. L'exploitation des réseaux sociaux et des techniques d'ingénierie sociale a permis de recueillir des informations sensibles, soulignant l'importance de la sensibilisation des utilisateurs. Les scans de ports et de répertoires ont identifié des points d'entrée exploitables, mettant en évidence le besoin de restrictions d'accès plus strictes.
 
-Un plan d’action prioritaire devrait inclure la mise à jour des composants obsolètes, la correction des injections SQL, la limitation du bruteforce et la surveillance accrue des accès. L’équipe de développement et l’équipe de sécurité devront collaborer pour définir rapidement un patch correctif et procéder à des tests de vulnérabilités récurrents.
+Les attaques par force brute et les injections SQL ont compromis des comptes utilisateurs et permis l'accès à des données sensibles, démontrant la nécessité de politiques de mots de passe plus robustes et de sécuriser les interactions avec la base de données. L'exploitation de failles dans les fonctionnalités de dépôt de fichiers a permis l'exécution de code malveillant, nécessitant des restrictions strictes sur les types de fichiers autorisés.
 
-Rapport rédigé par la Red Team.  
+Pour renforcer la sécurité du portail ECE, il est crucial d'investir dans la formation des développeurs, d'implémenter des politiques strictes de gestion des mots de passe, et de migrer vers HTTPS. La mise en place d'un système de gestion des informations et des événements de sécurité (SIEM) et l'application régulière des mises à jour de sécurité sont également essentielles. Une collaboration étroite entre les équipes de développement et de sécurité est nécessaire pour définir et mettre en œuvre des mesures correctives efficaces.
 
+Rapport rédigé par la Red Team.
 
 
