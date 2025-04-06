@@ -40,7 +40,7 @@ Après avoir configuré le VPC et les sous-réseaux, une instance EC2 a été cr
 
 ### 2.3 Obtention de l'adresse publique :
 - Pour se connecter à la machine virtuelle (VM) et accéder au site, il est nécessaire de connaître l'adresse IP publique de l'instance EC2.
-- L'adresse IP publique peut être trouvée dans la console AWS, sous la section **"Instances EC2"**. Dans notre cas, l'adresse IP publique de l'instance est `35.181.168.33`.
+- L'adresse IP publique peut être trouvée dans la console AWS, sous la section **"Instances EC2"**. Dans notre cas, l'adresse IP publique de l'instance est `35.180.94.78`.
 
 ### 2.4 Accès SSH :
 L'accès à la machine virtuelle se fait via la clé privée SSH associée à l'instance EC2. Pour garantir la sécurité, il est impératif de restreindre les permissions sur la clé privée, afin que seule l'utilisateur qui doit se connecter à l'instance puisse l'utiliser. En effet, si les permissions de la clé privée sont trop larges, la connexion SSH sera bloquée. Il est donc important de réduire les droits d'accès à la clé privée pour les utilisateurs non autorisés.
